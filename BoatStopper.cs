@@ -8,18 +8,27 @@ using System.Threading.Tasks;
 
 namespace Oxide.Plugins
 {
-    [Info("BoatStopper", "Ahmer", "1.0.0")]
-    [Description("Stop Row Boat, If noone is on it.")]
+    [Info("BoatStopper", "Ahmer", "1.0.1")]
+    [Description("Switch OFF Row Boat or Rhib Engine if noone is mounted.")]
     internal class BoatStopper: RustPlugin
     {
-        object OnEntityDismounted(BaseMountable entity, BasePlayer player)
+        void OnEntityDismounted(BaseMountable entity, BasePlayer player)
         {
-            MotorRowboat myRowBoat = entity.GetParentEntity() as MotorRowboat;
-            if(!myRowBoat.AnyMounted() && !myRowBoat.HasDriver())
+            if (entity.GetParentEntity().ShortPrefabName == "rowboat")
             {
-                myRowBoat.EngineToggle(false);
+                MotorRowboat myRowBoat = entity.GetParentEntity() as MotorRowboat;
+                if (!myRowBoat.AnyMounted() && !myRowBoat.HasDriver())
+                {
+                    myRowBoat.EngineToggle(false);
+                }
+            }else if(entity.GetParentEntity().ShortPrefabName == "rhib")
+            {
+                RHIB myRhidBoat = entity.GetParentEntity() as RHIB;
+                if (!myRhidBoat.AnyMounted() && !myRhidBoat.HasDriver())
+                {
+                    myRhidBoat.EngineToggle(false);
+                }
             }
-            return null;
         }
     }
 }
